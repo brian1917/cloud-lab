@@ -76,7 +76,7 @@ ec2Instances:
     vpc: jump-vpc
     subnet: jump-vpc.subnet-1
     ami: ubuntu24
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: true
     tags:
@@ -85,7 +85,7 @@ ec2Instances:
     vpc: vpc-1
     subnet: vpc-1.subnet-1
     ami: ubuntu24
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: false
     tags:
@@ -95,7 +95,7 @@ ec2Instances:
     vpc: vpc-1
     subnet: vpc-1.subnet-1
     ami: ubuntu24
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: false
     tags:
@@ -105,7 +105,7 @@ ec2Instances:
     vpc: vpc-1
     subnet: vpc-1.subnet-1
     ami: ubuntu24
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: false
     tags:
@@ -115,7 +115,7 @@ ec2Instances:
     vpc: vpc-1
     subnet: vpc-1.subnet-2
     ami: ubuntu24
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: false
     tags:
@@ -125,7 +125,7 @@ ec2Instances:
     vpc: vpc-1
     subnet: vpc-1.subnet-2
     ami: ubuntu24
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: false
     tags:
@@ -135,7 +135,7 @@ ec2Instances:
     vpc: vpc-1
     subnet: vpc-1.subnet-2
     ami: ubuntu24
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: false
     tags:
@@ -145,7 +145,7 @@ ec2Instances:
     vpc: vpc-1
     subnet: vpc-1.subnet-2
     ami: ubuntu24
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: false
     tags:
@@ -155,7 +155,7 @@ ec2Instances:
     vpc: vpc-1
     subnet: vpc-1.subnet-2
     ami: ubuntu24
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: false
     tags:
@@ -165,7 +165,7 @@ ec2Instances:
     vpc: vpc-2
     subnet: vpc-2.subnet-1
     ami: ubuntu24
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: false
     tags:
@@ -175,7 +175,7 @@ ec2Instances:
     vpc: vpc-2
     subnet: vpc-2.subnet-2
     ami: ubuntu24
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: false
     tags:
@@ -185,7 +185,7 @@ ec2Instances:
     vpc: vpc-2
     subnet: vpc-2.subnet-2
     ami: ubuntu24
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: false
     tags:
@@ -201,8 +201,8 @@ eksClusters: {}
 rdsInstances:
   rdsdb01:
     engine: mysql
-    engineVersion: 8.0.36
-    instanceClass: db.t3.micro
+    engineVersion: 8.0.39
+    instanceClass: db.t4g.micro
     vpc: vpc-1
 allowedPorts:
   private:

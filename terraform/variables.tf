@@ -2,6 +2,10 @@ variable "se_account" {
   type        = string
   description = "Individual SE account"
 }
+variable "route53_account" {
+  type        = string
+  description = "AWS Account to use to populate domain names from Route 53"
+}
 variable "domain" {
   type        = string
   description = "Domain"

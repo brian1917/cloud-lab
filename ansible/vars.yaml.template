@@ -1,5 +1,8 @@
+# Copy this file to a file called vars.yaml in the same directory, and then
+# modify the below variables in the copied file to correspond to your local setup.
+
 # Domain name - should be the same as what's defined in ../terraform/terraform.tfvars
-domain: "clemenslabs.com"
+domain: "yourdomain.com"
 
 # Should only need to modify this if you want to use a different SSH keyfile name
 # in the ~/.ssh directory.
@@ -10,7 +13,7 @@ sshkey: "id_rsa"
 
 # PCE variables
 pce_hostname: "pce"
-org: "clemens-lab"
-user_full_name: "Matt Clemens"
-user_email: "matt.clemens@illumio.com"
-user_pwd: "Illumio123"
+org: "some-unique-name"
+user_full_name: "Your Name"
+user_email: "your.email@illumio.com"
+user_pwd: "YourFavoritePCEPassword"

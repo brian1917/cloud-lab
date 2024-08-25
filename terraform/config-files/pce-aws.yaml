@@ -36,7 +36,7 @@ ec2Instances:
     vpc: pce-vpc
     subnet: pce-vpc.subnet-1
     ami: alma9
-    type: m5.2xlarge
+    type: m6a.2xlarge
     volSizeGb: 60
     publicIP: true
     tags:
@@ -45,7 +45,7 @@ ec2Instances:
     vpc: pce-vpc
     subnet: pce-vpc.subnet-1
     ami: alma9
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: true
     tags: {}
@@ -53,7 +53,7 @@ ec2Instances:
     vpc: pce-vpc
     subnet: pce-vpc.subnet-1
     ami: alma9
-    type: t3.micro
+    type: t3a.micro
     volSizeGb: 8
     publicIP: true
     tags: {}
@@ -61,7 +61,7 @@ ec2Instances:
     vpc: pce-vpc
     subnet: pce-vpc.subnet-1
     ami: alma9
-    type: m5.2xlarge
+    type: m6a.2xlarge
     volSizeGb: 60
     publicIP: true
     tags:

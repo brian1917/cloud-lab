@@ -1,5 +1,5 @@
 ---
-- name: "copy private key "
+- name: "copy certs"
   copy:
     src: "{{ item }}"
     dest: /var/lib/illumio-pce/cert/{{ item }}

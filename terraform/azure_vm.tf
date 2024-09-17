@@ -12,7 +12,7 @@ resource "azurerm_linux_virtual_machine" "linuxVMs" {
 
   admin_ssh_key {
     username   = "ubuntu"
-    public_key = file(local.aws_config.public_sshkey)
+    public_key = file("${local.aws_config.sshKey}.pub")
   }
 
   os_disk {

@@ -21,7 +21,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     admin_username = each.value["adminUserName"]
 
     ssh_key {
-      key_data = file(local.aws_config.public_sshkey)
+      key_data = file("${local.aws_config.sshKey}.pub")
     }
   }
   network_profile {

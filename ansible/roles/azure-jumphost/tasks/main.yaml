@@ -1,13 +1,25 @@
-- name: run the ansible playbook every hour
+- name: Install ansible on the remote host if not already installed
+  ansible.builtin.shell: |
+      if ! command -v ansible > /dev/null; then
+        sudo apt update && sudo apt install ansible -y
+      fi
+  args:
+    executable: /bin/bash
+    
+- name: Add to cron - run the ansible playbook every hour
   cron:
     name: configure azure hosts
     minute: "0"
     hour: "*" 
     job: "/usr/bin/ansible-playbook /home/ubuntu/ansible/main.yaml -i /home/ubuntu/ansible/azure.hosts"
 
-- name: update all azure servers every day at 7am
+- name: Add to cron - update all azure servers every day at 07:00
   cron:
     name: update servers
     minute: "0"
     hour: "7"
     job: "/usr/bin/ansible-playbook /home/ubuntu/ansible/update-servers.yaml -i /home/ubuntu/ansible/azure.hosts"
+
+- name: Execute relevant cron jobs now to set up azure servers
+  shell: |
+    /usr/bin/ansible-playbook /home/ubuntu/ansible/main.yaml -i /home/ubuntu/ansible/azure.hosts

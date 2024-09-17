@@ -1,0 +1,38 @@
+---
+- name: Load AWS YAML file
+  include_vars:
+    file: "{{ vars.aws_config_file }}"
+    name: aws_data
+
+- name: Load Azure YAML file
+  include_vars:
+    file: "{{ vars.azure_config_file }}"
+    name: azure_data
+
+- name: Generate aws.hosts from template
+  template:
+    src: aws.hosts.j2
+    dest: aws.hosts
+  vars:
+    ec2Instances: "{{ aws_data.ec2Instances }}"
+    ssh_key: "{{ aws_data.sshKey }}"
+    domain: "{{ aws_data.dnsZone }}"
+    linuxVMs: "{{ azure_data.linuxVMs }}"
+
+- name: Generate azure.hosts from template
+  template:
+    src: azure.hosts.j2
+    dest: azure.hosts
+  vars:
+    linuxVMs: "{{ azure_data.linuxVMs }}"
+    ssh_key: "{{ aws_data.sshKey }}"
+    domain: "{{ aws_data.dnsZone }}"
+
+- name: Generate pce.hosts from template
+  template:
+    src: pce.hosts.j2
+    dest: pce.hosts
+  vars:
+    ec2Instances: "{{ aws_data.ec2Instances }}"
+    ssh_key: "{{ aws_data.sshKey }}"
+    domain: "{{ aws_data.dnsZone }}"

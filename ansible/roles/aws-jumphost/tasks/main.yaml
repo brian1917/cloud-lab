@@ -1,28 +1,79 @@
+- name: Load AWS YAML file
+  include_vars:
+    file: "{{ vars.aws_config_file }}"
+    name: aws_data
 
-- name: configure cron to run the ansible playbook every hour
+- name: Ensure ansible directory exists
+  ansible.builtin.file:
+    path: /home/{{ ansible_user }}/ansible
+    state: directory
+    mode: '0755'
+
+- name: Copy contents to ansible directory on the remote host
+  ansible.posix.synchronize:
+    src: ./  # Adjust this path to the directory you want to copy from, if necessary
+    dest: /home/{{ ansible_user }}/ansible
+    rsync_opts:
+      - "--exclude=roles/pce/files"
+
+- name: Create the remote terraform configuration directories if it doesn't exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'  # Adjust permissions as needed
+  with_items: ["terraform", "terraform/config-files" ]
+   
+- name: Copy terraform configuration files to the jumphost
+  copy:
+    src: "{{ item }}"
+    dest: "terraform/config-files/{{ item | basename }}"
+  with_items: ["{{ vars.azure_config_file }}", "{{ vars.aws_config_file }}" ]
+
+- name: Install ansible on the remote host if not already installed
+  ansible.builtin.shell: |
+    if ! command -v ansible > /dev/null; then
+      sudo apt update && sudo apt install ansible -y
+    fi
+  args:
+    executable: /bin/bash
+
+- name: Add to cron - configure aws hosts every hour
   cron:
-    name: configure aws hosts
+    name: configure aws hosts every hour
     minute: "0"
     hour: "*" 
-    job: "/usr/bin/ansible-playbook /home/ubuntu/ansible/main.yaml -i /home/ubuntu/ansible/aws.hosts"
+    job: "/usr/bin/ansible-playbook /home/ubuntu/ansible/main.yaml -i /home/ubuntu/ansible/aws.hosts --limit '!aws_jh_pub'"
 
-- name: move files to azure jumphost every hour
+- name: Add to cron - move config files to azure jumphost every hour
   cron:
-    name: move files to azure jumphost
+    name: move config files to azure jumphost
     minute: "0"
     hour: "*"
-    job: "scp -r /home/ubuntu/ansible/ jumphost02.{{ domain }}:/home/ubuntu/"
+    job: "scp -r /home/ubuntu/terraform/ jumphost02.{{ aws_data.dnsZone }}:/home/ubuntu/"
 
-- name: update all other aws servers and azure jumphost every day at 6am
+- name: Add to cron - move files to azure jumphost every hour
+  cron:
+    name: move ansible files to azure jumphost every hour
+    minute: "0"
+    hour: "*"
+    job: "scp -r /home/ubuntu/ansible/ jumphost02.{{ aws_data.dnsZone }}:/home/ubuntu/"
+
+- name: Add to cron - update all other aws servers and azure jumphost every day at 6am
   cron:
     name: update servers
     minute: "0"
     hour: "6"
     job: "/usr/bin/ansible-playbook /home/ubuntu/ansible/update-servers.yaml -i /home/ubuntu/ansible/aws.hosts"
 
-- name: Reboot aws jumphost every day at 7:00am
+- name: Add to cron - reboot aws jumphost every day at 07:00
   cron:
     name: reboot server
     minute: "0"
     hour: "7"
     job: "sudo reboot"
+    
+- name: Execute relevant cron jobs now to set up aws servers and move files to azure jumphost
+  shell: |
+    /usr/bin/ansible-playbook /home/ubuntu/ansible/main.yaml -i /home/ubuntu/ansible/aws.hosts --limit '!aws_jh_pub'
+    scp -r /home/ubuntu/terraform/ jumphost02.{{ aws_data.dnsZone }}:/home/ubuntu/
+    scp -r /home/ubuntu/ansible/ jumphost02.{{ aws_data.dnsZone }}:/home/ubuntu/

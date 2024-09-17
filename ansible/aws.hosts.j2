@@ -1,25 +1,23 @@
 [web]
-fin-dev-web01.{{ domain }}
-fin-prd-web01.{{ domain }}
-fin-prd-web02.{{ domain }}
-fin-prd-web03.{{ domain }}
+{% for instance_name, instance in ec2Instances.items() if instance.tags.type == 'web' %}
+{{ instance_name }}.{{domain}}
+{% endfor %}
 
 [web:vars]
 port=443
 
 [app]
-fin-prd-app01.{{ domain }}
-fin-prd-app02.{{ domain }}
-fin-prd-app03.{{ domain }}
-fin-dev-app01.{{ domain }}
+{% for instance_name, instance in ec2Instances.items() if instance.tags.type == 'app' %}
+{{ instance_name }}.{{domain}}
+{% endfor %}
 
 [app:vars]
 port=8080
 
 [db]
-fin-prd-db01.{{ domain }}
-fin-prd-db02.{{ domain }}
-fin-dev-db01.{{ domain }}
+{% for instance_name, instance in ec2Instances.items() if instance.tags.type == 'db' %}
+{{ instance_name }}.{{domain}}
+{% endfor %}
 
 [db:vars]
 port=3306
@@ -30,13 +28,14 @@ app
 db
 
 [azure_jh]
-jumphost02.{{ domain }}
-
-[aws_jh_priv]
-jumphost01-priv.{{ domain }}
+{% for instance_name, instance in linuxVMs.items() if instance.tags.type == 'jump' %}
+{{ instance_name }}.{{domain}}
+{% endfor %}
 
 [aws_jh_pub]
-jumphost01.{{ domain }}
+{% for instance_name, instance in ec2Instances.items() if instance.tags.type == 'jump' %}
+{{ instance_name }}.{{domain}}
+{% endfor %}
 
 [all:vars]
 ansible_user=ubuntu

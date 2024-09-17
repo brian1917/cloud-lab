@@ -1,25 +1,23 @@
 [web]
-hrm-dev-web01.{{ domain }}
-hrm-prd-web01.{{ domain }}
-hrm-prd-web02.{{ domain }}
-hrm-prd-web03.{{ domain }}
+{% for instance_name, instance in linuxVMs.items() if instance.tags.type == 'web' %}
+{{ instance_name }}.{{domain}}
+{% endfor %}
 
 [web:vars]
 port=443
 
 [app]
-hrm-prd-app01.{{ domain }}
-hrm-prd-app02.{{ domain }}
-hrm-prd-app03.{{ domain }}
-hrm-dev-app01.{{ domain }}
+{% for instance_name, instance in linuxVMs.items() if instance.tags.type == 'app' %}
+{{ instance_name }}.{{domain}}
+{% endfor %}
 
 [app:vars]
 port=8080
 
 [db]
-hrm-prd-db01.{{ domain }}
-hrm-prd-db02.{{ domain }}
-hrm-dev-db01.{{ domain }}
+{% for instance_name, instance in linuxVMs.items() if instance.tags.type == 'db' %}
+{{ instance_name }}.{{domain}}
+{% endfor %}
 
 [db:vars]
 port=3306

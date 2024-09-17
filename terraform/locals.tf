@@ -8,20 +8,17 @@ locals {
   aws_config = merge(
     local.aws_config_temp, 
     { 
-      s3FlowLogArn = "arn:aws:s3:::global-vpc-flow-logs-${var.se_account}" # Not creating an S3 bucket so it's always available and never destroyed.
-      dnsZone = "${var.domain}"
+      s3FlowLogArn = "arn:aws:s3:::global-vpc-flow-logs-${terraform.workspace}" # Not creating an S3 bucket so it's always available and never destroyed.
       public_sshkey = "~/.ssh/${var.sshkey}.pub"
       private_sshkey = "~/.ssh/${var.sshkey}" 
-      admin_cidr_list = "${var.admin_cidr_list}"
     }
   ) 
 
-# For Azure, set the name of the resource group to correspond to the workspace plus the se identifier
+# For Azure, set the name of the resource group to correspond to the workspace
   azure_config = merge(
     local.azure_config_temp, 
     { 
-      resourceGroup = "${terraform.workspace}-${var.se_account}"
-      admin_cidr_list = "${var.admin_cidr_list}"
+      resourceGroup = "${terraform.workspace}"
     }
   ) 
 

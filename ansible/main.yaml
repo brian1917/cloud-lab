@@ -8,20 +8,43 @@
   vars_files:
     - vars.yaml
   tasks:
-    - name: Generate azure.hosts from template
-      template:
-        src: azure.hosts.j2
-        dest: azure.hosts
+    - name: Load AWS YAML file
+      include_vars:
+        file: "{{ vars.aws_config_file }}"
+        name: aws_data
+
+    - name: Load Azure YAML file
+      include_vars:
+        file: "{{ vars.azure_config_file }}"
+        name: azure_data
 
     - name: Generate aws.hosts from template
       template:
         src: aws.hosts.j2
         dest: aws.hosts
+      vars:
+        ec2Instances: "{{ aws_data.ec2Instances }}"
+        ssh_key: "{{ aws_data.sshKey }}"
+        domain: "{{ aws_data.dnsZone }}"
+        linuxVMs: "{{ azure_data.linuxVMs }}"
+
+    - name: Generate azure.hosts from template
+      template:
+        src: azure.hosts.j2
+        dest: azure.hosts
+      vars:
+        linuxVMs: "{{ azure_data.linuxVMs }}"
+        ssh_key: "{{ aws_data.sshKey }}"
+        domain: "{{ aws_data.dnsZone }}"
 
     - name: Generate pce.hosts from template
       template:
         src: pce.hosts.j2
         dest: pce.hosts
+      vars:
+        ec2Instances: "{{ aws_data.ec2Instances }}"
+        ssh_key: "{{ aws_data.sshKey }}"
+        domain: "{{ aws_data.dnsZone }}"
 
 
 - name: Apply shell aliases
@@ -49,23 +72,26 @@
   roles:
     - common_files
 
-- name: Setup AWS jumphost - private IP
-  hosts: aws_jh_priv
-  vars_files:
-    - vars.yaml
-  roles:
-    - aws-jumphost
+# - name: Setup AWS jumphost - private IP
+#   hosts: aws_jh_priv
+#   vars_files:
+#     - vars.yaml
+#   roles:
+#     - aws-jumphost
+#   tags:
+#     - never
+#     - aws_jh_priv
 
 - name: Setup AWS jumphost - public IP
   hosts: aws_jh_pub
   tags:
-    - never
     - aws_jh_pub
   vars_files:
     - vars.yaml
   roles:
     - aws-jumphost
   tasks:
+    
     - name: Ensure ansible directory exists
       ansible.builtin.file:
         path: /home/{{ ansible_user }}/ansible
@@ -77,6 +103,20 @@
         dest: /home/{{ ansible_user }}/ansible
         rsync_opts:
           - "--exclude=roles/pce/files"
+    
+    - name: Create the remote terraform configuration directories if it doesn't exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'  # Adjust permissions as needed
+      with_items: ["terraform", "terraform/config-files" ]
+   
+    - name: Copy terraform configuration files to the jumphost
+      copy:
+        src: "{{ item }}"
+        dest: "terraform/{{ item | basename }}"
+      with_items: ["{{ vars.azure_config_file }}", "{{ vars.aws_config_file }}" ]
+
     - name: Install ansible on the remote host if not already installed
       ansible.builtin.shell: |
         if ! command -v ansible > /dev/null; then

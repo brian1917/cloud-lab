@@ -1,4 +1,11 @@
 ---
+
+- name: Load AWS YAML file
+  include_vars:
+    file: "{{ vars.aws_config_file }}"
+    name: aws_data
+
+
 - name: Ensure .bash_aliases file exists with correct content
   template:
     src: bash_aliases.j2
@@ -6,6 +13,8 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: '0644'
+  vars:
+    domain: "{{ aws_data.dnsZone }}"
 
 - name: Ensure .bash_aliases is sourced in .bashrc
   lineinfile:

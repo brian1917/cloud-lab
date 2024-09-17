@@ -1,6 +1,6 @@
 provider "aws" {
   region  = local.aws_config.region
-  profile = "${var.se_account}"
+  profile = "${terraform.workspace}"
 }
 
 #provider "aws" {

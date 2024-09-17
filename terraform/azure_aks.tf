@@ -25,7 +25,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     }
   }
   network_profile {
-    network_plugin    = "kubenet"
+    network_plugin    = each.value["cni"]
     load_balancer_sku = "standard"
   }
 }

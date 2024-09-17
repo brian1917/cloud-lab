@@ -28,7 +28,7 @@ resource "aws_subnet" "subnets" {
 resource "aws_key_pair" "auth" {
   for_each   = local.aws_config.vpcs
   key_name   = each.key
-  public_key = file(local.aws_config.public_sshkey)
+  public_key = file("${local.aws_config.sshKey}.pub")
 }
 
 # // Create 1 s3 bucket for VPC flow logs

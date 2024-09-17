@@ -1,24 +1,14 @@
 locals {
 
-  aws_config_temp   = yamldecode(file("${path.module}/config-files/${terraform.workspace}-aws.yaml"))
+  aws_config   = yamldecode(file("${path.module}/config-files/${terraform.workspace}-aws.yaml"))
   azure_config_temp = yamldecode(file("${path.module}/config-files/${terraform.workspace}-azure.yaml"))
 
-# Moved expressions that reference variables here from the yaml configs
-# For aws, set the name of the S3 bucket that will be used for VPC flow logs
-  aws_config = merge(
-    local.aws_config_temp, 
-    { 
-      s3FlowLogArn = "arn:aws:s3:::global-vpc-flow-logs-${terraform.workspace}" # Not creating an S3 bucket so it's always available and never destroyed.
-      public_sshkey = "~/.ssh/${var.sshkey}.pub"
-      private_sshkey = "~/.ssh/${var.sshkey}" 
-    }
-  ) 
 
 # For Azure, set the name of the resource group to correspond to the workspace
   azure_config = merge(
     local.azure_config_temp, 
     { 
-      resourceGroup = "${terraform.workspace}"
+      resourceGroup = terraform.workspace
     }
   ) 
 

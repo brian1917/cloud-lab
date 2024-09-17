@@ -1,14 +1,17 @@
 [splunk]
-splunk.{{ domain }}
+{% for instance_name, instance in ec2Instances.items() if instance.tags.type == 'splunk' %}
+{{ instance_name }}.{{domain}}
+{% endfor %}
 
 [wklds]
-lw01.{{ domain }}
-lw02.{{ domain }}
-lw03.{{ domain }}
-lw04.{{ domain }}
+{% for instance_name, instance in ec2Instances.items() if instance.tags.type == 'linuxWkld' %}
+{{ instance_name }}.{{domain}}
+{% endfor %}
 
 [pce]
-{{ pce_hostname }}.{{ domain }}
+{% for instance_name, instance in ec2Instances.items() if instance.tags.type == 'pce' %}
+{{ instance_name }}.{{domain}}
+{% endfor %}
 
 [pce:vars]
 org="{{ org }}"

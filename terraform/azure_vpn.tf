@@ -13,7 +13,7 @@ resource "azurerm_public_ip" "vgw_pip" {
   name                = "vgw_pip"
   location            = local.azure_config.location
   resource_group_name = local.azure_config.resourceGroup
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
 }
 
 

@@ -35,7 +35,7 @@
 - name: copy traffic-generator traffic file
   template:
     src: traffic.csv.j2
-    dest: /etc/traffic-generator/
+    dest: /etc/traffic-generator/traffic.csv
 
 - name: run traffic every 10 minutes
   cron:

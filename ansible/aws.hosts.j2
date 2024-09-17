@@ -37,6 +37,11 @@ db
 {{ instance_name }}.{{domain}}
 {% endfor %}
 
+[aws_jh_priv]
+{% for instance_name, instance in ec2Instances.items() if instance.tags.type == 'jump' %}
+{{ instance_name }}-priv.{{domain}}
+{% endfor %}
+
 [all:vars]
 ansible_user=ubuntu
 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'

@@ -50,7 +50,6 @@ resource "azurerm_storage_account" "storage" {
   account_tier              = "Standard"
   account_kind              = "StorageV2"
   account_replication_type  = "LRS"
-  enable_https_traffic_only = true
 }
 
 resource "azurerm_network_watcher_flow_log" "nw_flog" {

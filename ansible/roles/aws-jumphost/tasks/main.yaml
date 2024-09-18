@@ -11,8 +11,8 @@
 
 - name: Copy contents to ansible directory on the remote host
   ansible.posix.synchronize:
-    src: ./  # Adjust this path to the directory you want to copy from, if necessary
-    dest: /home/{{ ansible_user }}/ansible
+    src: ../../../../ansible  # Adjust this path to the directory you want to copy from, if necessary
+    dest: /home/{{ ansible_user }}
     rsync_opts:
       - "--exclude=roles/pce/files"
 

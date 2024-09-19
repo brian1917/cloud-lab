@@ -3,16 +3,9 @@ provider "aws" {
   profile = "${terraform.workspace}"
 }
 
-#provider "aws" {
-#  alias   = "route53"
-#  profile = "demosales"
-#  region  = local.aws_config.region
-#}
-
-
 provider "aws" {
-  alias   = "personal"
-  profile = "personal"
+  alias   = "route53"
+  profile = local.aws_config.route53AWSProfile
   region  = local.aws_config.region
 }
 

@@ -16,3 +16,7 @@ ansible/aws.hosts
 ansible/azure.hosts
 k8s/*
 terraform/config-files/*
+!terraform/config-files/se32-aws.yaml
+!terraform/config-files/se32-azure.yaml
+!terraform/config-files/lab-aws.yaml
+!terraform/config-files/lab-azure.yaml

@@ -1,0 +1,125 @@
+---
+######### This section should be updated for each deployment #########
+region: us-east-1
+dnsZone: lot48labs.com
+sshKey: ~/.ssh/id_rsa
+s3FlowLogArn: arn:aws:s3:::global-vpc-flow-logs-se32 # No S3 bucket is created so centralized storage can be used. Put the arn of the S3 bucket here.
+route53AWSProfile: "personal" # The AWS profile to be used in your AWS configuration for the route53 DNS
+admin_cidr_list:
+  - 142.215.23.80/28 # VPN
+  - 73.186.42.76/32 # Home IP
+
+######### This section should only be customized if you want to change network or instance configurations #########
+vpcs:
+  pce-vpc:
+    logFlows: false
+    dbGroup : false
+    cidrBlock: 192.168.30.0/24
+    subnets:
+      subnet-1:
+        cidrBlock: 192.168.30.0/26
+        az: a
+        public: true
+      subnet-2:
+        cidrBlock: 192.168.30.64/26
+        az: b
+        public: false
+amis:
+  centos7:
+    ami: CentOS Linux 7 x86_64 - 2211
+    owner: '125523088429'
+    user: centos
+  alma9:
+    ami: AlmaLinux OS 9.4.20240509 x86_64
+    owner: '764336703387'
+    user: ec2-user
+  ubuntu22:
+    ami: ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server*
+    owner: '099720109477'
+    user: ubuntu
+  ubuntu24:
+    ami: ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server*
+    owner: '099720109477'
+    user: ubuntu
+ec2Instances:
+  pce:
+    vpc: pce-vpc
+    subnet: pce-vpc.subnet-1
+    ami: alma9
+    type: m5.2xlarge
+    volSizeGb: 60
+    publicIP: true
+    tags:
+      type: pce
+  lw01:
+    vpc: pce-vpc
+    subnet: pce-vpc.subnet-1
+    ami: alma9
+    type: t3.micro
+    volSizeGb: 8
+    publicIP: true
+    tags: {
+      type: linuxWkld
+    }
+  lw02:
+    vpc: pce-vpc
+    subnet: pce-vpc.subnet-1
+    ami: alma9
+    type: t3.micro
+    volSizeGb: 8
+    publicIP: true
+    tags: {
+      type: linuxWkld
+    }
+  lw03:
+    vpc: pce-vpc
+    subnet: pce-vpc.subnet-1
+    ami: alma9
+    type: t3.micro
+    volSizeGb: 8
+    publicIP: true
+    tags: {
+      type: linuxWkld
+    }
+  lw04:
+    vpc: pce-vpc
+    subnet: pce-vpc.subnet-1
+    ami: alma9
+    type: t3.micro
+    volSizeGb: 8
+    publicIP: true
+    tags: {
+      type: linuxWkld
+    }
+  # splunk:
+  #   vpc: pce-vpc
+  #   subnet: pce-vpc.subnet-1
+  #   ami: alma9
+  #   type: m5.2xlarge
+  #   volSizeGb: 60
+  #   publicIP: true
+  #   tags:
+  #     type: splunk
+  nenflowlink:
+    vpc: pce-vpc
+    subnet: pce-vpc.subnet-1
+    ami: alma9
+    type: m5.2xlarge
+    volSizeGb: 60
+    publicIP: true
+    tags:
+      type: nenflowlink
+eksClusters: {}
+rdsInstances: {}
+allowedPorts:
+  private:
+  - 22
+  - 3306
+  - 443
+  - 8080
+  - 8000
+  - 5140
+  public:
+  - 8443
+  - 8444
+  - 80

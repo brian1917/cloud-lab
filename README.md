@@ -1,71 +1,50 @@
 # Cloud Lab
-This repo contains Terraform and Ansible for building a lab in the cloud.
+This repo contains Terraform and Ansible for building a CloudSecure demo or a cloud-hosted lab.
 
-There are currently two workspaces defined:
+## Terraform
+The first step is building the infrastructure via Terraform. This lab has been tested on `Terraform v1.8.5`.
 
-cs-demo: has several workloads across aws and azure that are a good demonstration for CloudSecure.  
-pce: optional and could be utilized to setup a custom SNC demo PCE in AWS along with a few other workloads.
+Each lab should use its own Terraform workspace. See below for useful commands:
+- See all Terraform workspaces: `terraform workspace list`
+- Create a new Terraform workspace: `terraform workspace new se32`
+- Switch Terraform workspaces: `terraform workspace select se32`
 
-Pre-reqs
---------
+The lab is designed to be governed by two configuration files: 1 for AWS and 1 for Azure. The config files should reside in the `terraform/config-files` directory. The format should be `{terraform-workspace}-{csp}.yaml.` For example, if my Terraform workspace is `se32`, the lab config files should `terraform/config-files/se32-aws.yaml` amd `terraform/config-files/se32-azure.yaml`
 
-Install terraform and ansible.
+The two example config files in this repo have annotated the parameters that need to be configured. The `se32` example has networks and workloads for building a demo for CloudSecure. This Terraform targets AWS and Azure. The `lab` example is simpler with AWS only workloads for a PCE and example workloads. (Note - you still need the Azure config file, but it's mainly empty)
 
-The Terraform and some of the Ansible plays rely on the AWS and Azure cli. Google or ask
-ChatGPT how to set this up.
-
-For AWS, you'll want to setup both your se account and your personal accont. Your credentials file 
-would look something like this.
-
+Terraform will require credentials in ~/.aws/credentials to connect to your account. See below for example format of this file:
+```
 » more ~/.aws/credentials  
-[se15]  
+[se32]  
 aws_access_key_id = XXXXXXXXXXXXXXXXXXXX  
 aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY  
 [personal]  
 aws_access_key_id = XXXXXXXXXXXXXXXXXXXX  
 aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+```
 
-You'll need a registered domain name. The Terraform setup assumes the domain exists in your personal
-aws account. Easiest thing is to just register a domain via route53 ($14/year) in your personal account.
+### Route53
+Terraform creates DNS entries via Route53. The `route53AWSProfile` parameter in the AWS config file specifies the AWS profile to use for DNS. It's recommend to use a personal AWS account with registered DNS ($14/yr). If you use `poc.segmentationpov.com` DNS, you might need to change all VM hostnames to not conflict with other DNS entries.
 
-Terraform
----------
-
-All of the variables to customize a particular setup can be found in terraform/terraform.tfvars. Review this
-file and edit as appropriate for your environment.
-
-The terraform setup relys on making sure you have your workspace set to the same name as the configs
-defined in terraform/config-files. The two profiles currently contained in the repo are "cs-demo"
-and "pce".
-
-To setup cs-demo, you'd do something like this:
-
-Edit terraform/terraform.tfvars.
-
+### Example commands to get started
+```
 cd terraform  
 terraform init  
-terraform workspace new cs-demo  
+terraform workspace new se32
 terraform workspace list (verify your in the correct workspace)  
 terraform plan (will give a list of all the assets that will be created)  
 terrafrom apply (will create everything)
+```
 
 The above can take a while, and may fail the first couple times when creating the aws <-> azure vpn.
-Just run it again if it fails and it should eventually work.
+Run it again if it fails and it should eventually work.
 
-A couple things that aren't yet in the terraform setup that you may want to do manually in the aws console.
 
-1) Create an AWS Loadbalncer and load balance the 3 fin-prd web servers.
-2) If you setup the pce workspace as well, setup a peering relationship between jump-vpc and pce-vpc
+## Ansible
+This lab was tested on `ansible [core 2.16.3]`.
+Once the infrastructure is built, use Ansible to configure it. There are some simple bash scripts to run the configuration.
 
-Ansible
--------
-
-All of the variables to customize a particular setup can be found in ansible/vars.yaml. Review this
-file and edit as appropriate for your environment.
-
-There are several setup scripts that can be utilized to run ansible.
-
-01-setup-hosts.sh - Run this first to setup the local host files.  
-02-setup-cs-demo.sh - This will setup the traffic in the cs-demo.   
-03-update-pce.sh - This runs an update on the pce workloads.  
-04-setup-pce.sh - This sets up the pce.
+1. Update your `ansible/vars.yaml` file.
+2. Generate your hosts file by running `ansible/01-setup-hosts.sh`
+3. Depending on your lab either run `ansible/02-setup-cs-demo.sh` or `ansible/04-setup-pce.sh.`

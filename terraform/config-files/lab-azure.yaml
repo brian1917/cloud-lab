@@ -1,0 +1,10 @@
+---
+location: East US
+vnets: {}
+vnetPairings: {}
+vpnConnections: {}
+networkSecurityGroups: {}
+windowsVMs: {}
+linuxVMs: {}
+managedDBs: {}
+aksClusters: {}

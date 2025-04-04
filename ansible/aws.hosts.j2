@@ -28,17 +28,17 @@ app
 db
 
 [azure_jh]
-{% for instance_name, instance in linuxVMs.items() if instance.tags.type == 'jump' %}
+{% for instance_name, instance in linuxVMs.items() if instance.tags.type == 'jumpbox' %}
 {{ instance_name }}{{ dnsSuffix }}.{{domain}}
 {% endfor %}
 
 [aws_jh_pub]
-{% for instance_name, instance in ec2Instances.items() if instance.tags.type == 'jump' %}
+{% for instance_name, instance in ec2Instances.items() if instance.tags.type == 'jumpbox' %}
 {{ instance_name }}{{ dnsSuffix }}.{{domain}}
 {% endfor %}
 
 [aws_jh_priv]
-{% for instance_name, instance in ec2Instances.items() if instance.tags.type == 'jump' %}
+{% for instance_name, instance in ec2Instances.items() if instance.tags.type == 'jumpbox' %}
 {{ instance_name }}-priv{{ dnsSuffix }}.{{domain}}
 {% endfor %}
 

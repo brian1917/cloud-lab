@@ -29,3 +29,7 @@ config-files/*
 *.zip
 *confidential.yaml
 scripts/*.log
+vaas/response_body.txt
+vaas/*.json
+vaas/*.env
+!vaas/config-sample.env

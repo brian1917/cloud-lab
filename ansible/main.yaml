@@ -10,7 +10,7 @@
   roles:
     - localhost
   
-- name: Apply base configuration for aliases and SSH keys
+- name: Apply base configuration for aliases
   hosts: all
   tags:
     - always
@@ -18,7 +18,6 @@
     - vars.yaml
   roles:
     - shell_aliases
-    - common_files
 
 - name: Setup Demo Jumpbox
   hosts: demo-jumpbox

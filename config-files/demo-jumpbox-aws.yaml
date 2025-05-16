@@ -1,16 +1,16 @@
 ---
 ######### This section should be updated for each deployment #########
 region: us-east-1
-dnsZone: illumio-demo.com
+dnsZone: clemenslabs.com
 dnsSubDomain: uscentral # No trailing or preceding dots.
 sshKey: ~/.ssh/id_rsa
 s3FlowLogArn: arn:aws:s3:::global-vpc-flow-logs-se15-us-east-1 # No S3 bucket is created so centralized storage can be used. Put the arn of the S3 bucket here.
-route53AWSProfile: "demo-dns" # The AWS profile to be used in your AWS configuration for the route53 DNS
+route53AWSProfile: "se15" # The AWS profile to be used in your AWS configuration for the route53 DNS
 
 ######### This section should only be customized if you want to change network or instance configurations #########
 vpcs:
   demo-jump-vpc:
-    logFlows: false
+    logFlows: true
     dbGroup : false
     cidrBlock: 192.168.1.0/24
     subnets:
@@ -35,8 +35,8 @@ ec2Instances:
     vpc: demo-jump-vpc
     subnet: demo-jump-vpc.subnet-1
     ami: ubuntu24
-    type: t3a.micro
-    volSizeGb: 8
+    type: t3a.medium
+    volSizeGb: 20
     publicIP: true
     tags: {
       type: demo-jumpbox

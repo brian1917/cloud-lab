@@ -3,6 +3,17 @@
     file: "{{ vars.aws_config_file }}"
     name: aws_data
 
+- name: Copy private ssh key
+  vars:
+    ssh_key: "{{ aws_data.sshKey }}"
+    ssh_file: "{{ ssh_key.split('/')[-1] }}"
+  ansible.builtin.copy:
+    src: "{{ aws_data.sshKey }}"
+    dest: /home/{{ ansible_user }}/.ssh/{{ ssh_file }}
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0600'
+    
 - name: Ensure ansible directory exists
   ansible.builtin.file:
     path: /home/{{ ansible_user }}/ansible
@@ -21,7 +32,7 @@
     path: "{{ item }}"
     state: directory
     mode: '0755'  # Adjust permissions as needed
-  with_items: ["terraform", "config-files" ]
+  with_items: ["config-files" ]
    
 - name: Copy terraform configuration files to the jumphost
   copy:

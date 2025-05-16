@@ -13,20 +13,27 @@
     path: /home/{{ ansible_user }}/.ssh/id_rsa
     type: rsa
     size: 4096
-    force: true
   become_user: "{{ ansible_user }}"
+
+- name: Check if cloud-lab repo directory exists
+  ansible.builtin.stat:
+    path: /home/{{ ansible_user }}/cloud-lab
+  register: cloud_lab_repo_stat
 
 - name: Clone the cloud-lab repository
   ansible.builtin.git:
     repo: https://github.com/brian1917/cloud-lab
     dest: /home/{{ ansible_user }}/cloud-lab
     version: HEAD
-    force: yes
   become_user: "{{ ansible_user }}"
+  when: not cloud_lab_repo_stat.stat.exists
 
 - name: Install Terraform dependencies
   ansible.builtin.package:
-    name: unzip
+    name:
+      - unzip
+      - zip
+      - at
     state: present
   become: true
 
@@ -104,3 +111,23 @@
     name: azure-cli
     state: present
   become: true
+
+- name: Ensure daily package update at 2am
+  ansible.builtin.cron:
+    name: "Daily apt update and upgrade"
+    minute: "0"
+    hour: "2"
+    job: "sudo apt update && sudo apt -y upgrade"
+    user: ubuntu
+  when: ansible_facts['os_family'] == 'Debian'
+  become: true
+
+- name: Ensure daily reboot at 3am
+  ansible.builtin.cron:
+    name: "Daily reboot"
+    minute: "0"
+    hour: "3"
+    job: "sudo /sbin/reboot"
+    user: ubuntu
+  become: true
+  when: ansible_facts['os_family'] == 'Debian'

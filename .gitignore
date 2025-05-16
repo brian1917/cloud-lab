@@ -29,6 +29,7 @@ config-files/*
 !config-files/demo-jumpbox-aws.yaml
 !config-files/demo-jumpbox-azure.yaml
 *.zip
+!terraform/lambda-code/lambda_function.zip
 *confidential.yaml
 scripts/*.log
 vaas/response_body.txt

@@ -6,7 +6,7 @@ resource "null_resource" "lambda_archive" {
   }
 
   triggers = {
-    file_checksum = filesha256(each.value["fileName"])
+    file_checksum = fileexists(each.value["fileName"]) ? filesha256(each.value["fileName"]) : "missing"
     zip_missing   = !fileexists(each.value["fileName"])
   }
 }
